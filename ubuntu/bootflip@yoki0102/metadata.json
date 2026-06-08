@@ -1,0 +1,8 @@
+{
+  "uuid": "bootflip@yoki0102",
+  "name": "BootFlip",
+  "description": "One-click reboot into Windows from the GNOME top bar (UEFI BootNext).",
+  "shell-version": ["3.36"],
+  "version": 1,
+  "url": "https://github.com/yoki0102/BootFlip"
+}

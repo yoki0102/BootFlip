@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+# bootflip — set the UEFI one-shot boot target (BootNext), optionally reboot.
+# Must run as root. Invoked by the BootFlip GNOME Shell extension via sudo.
+set -euo pipefail
+
+usage() { echo "Usage: bootflip {win|linux|cancel} [-r|--reboot]" >&2; exit 1; }
+
+[ "$(id -u)" -eq 0 ] || { echo "bootflip: must run as root" >&2; exit 1; }
+[ $# -ge 1 ] || usage
+
+# Locale-agnostic entry lookup. Matches by content, not localized field labels.
+find_entry() {
+    /usr/bin/efibootmgr | awk -v p="$1" '
+        BEGIN { IGNORECASE = 1 }
+        /^Boot[0-9A-Fa-f]{4}\*/ && $0 ~ p { print substr($1, 5, 4); exit }
+    '
+}
+
+case "${1:-}" in
+    win|windows)
+        entry=$(find_entry "Windows Boot Manager")
+        [ -n "$entry" ] || { echo "bootflip: no 'Windows Boot Manager' entry in UEFI" >&2; exit 2; }
+        /usr/bin/efibootmgr -n "$entry" >/dev/null
+        target="Windows ($entry)"
+        ;;
+    linux|ubuntu)
+        entry=$(find_entry "ubuntu")
+        [ -n "$entry" ] || entry=$(find_entry "GRUB")
+        [ -n "$entry" ] || { echo "bootflip: no 'ubuntu'/'GRUB' entry in UEFI" >&2; exit 2; }
+        /usr/bin/efibootmgr -n "$entry" >/dev/null
+        target="Ubuntu ($entry)"
+        ;;
+    cancel)
+        /usr/bin/efibootmgr -N >/dev/null
+        target="default boot order (cancelled)"
+        ;;
+    *) usage ;;
+esac
+
+logger -t bootflip "next boot: $target"
+echo "Next boot: $target"
+
+case "${2:-}" in
+    -r|--reboot) exec systemctl reboot ;;
+esac
