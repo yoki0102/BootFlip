@@ -31,7 +31,8 @@ case "${1:-}" in
         target="Ubuntu ($entry)"
         ;;
     cancel)
-        /usr/bin/efibootmgr -N >/dev/null
+        # Idempotent: no error if no BootNext is set.
+        /usr/bin/efibootmgr -N >/dev/null 2>&1 || true
         target="default boot order (cancelled)"
         ;;
     *) usage ;;
