@@ -27,11 +27,13 @@ class BootFlip extends PanelMenu.Button {
         });
         this.menu.addMenuItem(winItem);
 
-        const cancelItem = new PopupMenu.PopupMenuItem('Cancel pending switch');
-        cancelItem.connect('activate', () => {
+        // Mirror of the Windows side: "Switch to Ubuntu" here cancels any
+        // pending one-shot switch (next boot stays on the default — Ubuntu).
+        const ubuntuItem = new PopupMenu.PopupMenuItem('Switch to Ubuntu');
+        ubuntuItem.connect('activate', () => {
             Util.spawnCommandLine('sudo /usr/local/bin/bootflip cancel');
         });
-        this.menu.addMenuItem(cancelItem);
+        this.menu.addMenuItem(ubuntuItem);
     }
 });
 

@@ -113,8 +113,8 @@ Click the BootFlip icon (top-right of the panel).
 
 | Menu item | Action |
 |---|---|
-| **Switch to Windows**     | Sets the one-shot `BootNext` to Windows and reboots immediately. |
-| **Cancel pending switch** | Clears any pending `BootNext`. No reboot. |
+| **Switch to Windows** | Sets the one-shot `BootNext` to Windows and reboots immediately. |
+| **Switch to Ubuntu**  | Cancels any pending one-shot switch. No reboot. |
 
 ### Uninstall
 
