@@ -1,0 +1,18 @@
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# IDE / editor
+.vscode/
+.idea/
+*.swp
+*~
+
+# Diagnostics
+bcdedit-firmware-dump.txt
+
+# OS junk
+.DS_Store
