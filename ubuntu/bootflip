@@ -10,9 +10,10 @@ usage() { echo "Usage: bootflip {win|linux|cancel} [-r|--reboot]" >&2; exit 1; }
 
 # Locale-agnostic entry lookup. Matches by content, not localized field labels.
 find_entry() {
+    # Note: avoid regex interval quantifiers like {4} — Ubuntu's default awk is
+    # mawk, which does not support them, so the pattern would never match.
     /usr/bin/efibootmgr | awk -v p="$1" '
-        BEGIN { IGNORECASE = 1 }
-        /^Boot[0-9A-Fa-f]{4}\*/ && $0 ~ p { print substr($1, 5, 4); exit }
+        /^Boot[0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f]\*/ && index($0, p) { print substr($1, 5, 4); exit }
     '
 }
 
